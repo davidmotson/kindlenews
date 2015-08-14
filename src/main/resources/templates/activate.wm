@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="/favicon.ico">
+
+<title>Kindle News | Activate Account</title>
+
+<link href="/css/sticky_footer.css" rel="stylesheet">
+
+<link href="/css/jquery.toastmessage.css" rel="stylesheet">
+
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<link href="/css/jumbotron-narrow.css" rel="stylesheet">
+
+
+
+<script src="/js/jquery.toastmessage.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">KindleNews</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="jumbotron">
+			<h2>Activate Account</h2>
+			<div class="instructions">
+				<p>
+					It's now time to activate your account, and confirm ownership of
+					your Kindle. <br> 1. Add kindlenews@mykindlenews.com to the
+					Approved Personal Document E-Mail List in your <a
+						href="https://www.amazon.com/mn/dcw/myx.html#/home/settings/"
+						target="_blank">Kindle Settings</a> <br> 2. Click the Send
+					Email Button below <br> 3. Enter the code you received on your kindle and
+					activate your account!
+
+				</p>
+				<div id="email-div">
+				<button id="send-button" class="btn btn-lg btn-primary btn-block"
+						type="submit">Send Email</button>
+				</div>
+				<div id= "key-div">
+					<label for="inputCode" class="sr-only">Code</label> <input
+						type="text" id="inputCode" class="form-control input-lg"
+						placeholder="Code" required>
+					<button id="submit-button" class="btn btn-lg btn-primary btn-block"
+						type="submit">Activate Account</button>
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer">
+			<p>by David Motsonashvili</p>
+		</footer>
+
+	</div>
+
+</body>
+<script>
+	$('#email-div').hide();
+	$('#key-div').hide();
+	setTimeout(function() {
+		$('#email-div').fadeIn('slow');
+	}, 3000);
+	$("#send-button").click(function() {
+		$('#email-div').hide();
+		$('#key-div').fadeIn('slow');
+		$.ajax({
+			type : "POST",
+			url : "users/create_key"
+		});
+	});
+	$("#submit-button").click(function() {
+		var code = $("#inputCode").val();
+		$("#submit-button").prop("disabled", true);
+		$.ajax({
+			type : "POST",
+			url : "users/check_key",
+			data : {
+				key : code
+			},
+			success : function(body) {
+				var object = JSON.parse(body);
+				if (object.status === "success") {
+					window.location.href = "/account";
+				} else {
+					$().toastmessage('showToast', {
+						text : object.error,
+						sticky : false,
+						type : 'error',
+						close : function() {
+							$("#submit-button").prop("disabled", false)
+						}
+					});
+				}
+			}
+		});
+
+	});
+</script>
+</html>

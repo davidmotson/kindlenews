@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="/favicon.ico">
+
+<title>Kindle News</title>
+
+<link href="/css/sticky_footer.css" rel="stylesheet">
+
+<link href="/css/jquery.toastmessage.css" rel="stylesheet">
+
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<link href="/css/jumbotron-narrow.css" rel="stylesheet">
+
+
+<script src="/js/jquery.toastmessage.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">KindleNews</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<div class="navbar-form navbar-right">
+					<div class="form-group">
+						<input id="username-box" type="text" placeholder="Username"
+							class="form-control">
+					</div>
+					<div class="form-group">
+						<input id="password-box" type="password" placeholder="Password"
+							class="form-control">
+					</div>
+					<button id="submit-button" type="submit" class="btn btn-success">Sign
+						in</button>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="jumbotron">
+			<h1>News on your Kindle</h1>
+			<p class="lead">
+				Do you want the BBC, National Geographic and The New York Times sent
+				to your Kindle? <br> How about The Onion, XKCD, Dilbert and
+				Kotaku?
+			</p>
+			<p>
+				<a class="btn btn-lg btn-success" href="/signup" role="button">Get
+					Started Now</a>
+			</p>
+		</div>
+
+		<div class="row marketing">
+			<div class="col-lg-6">
+				<h4>Full Control. No Hassle</h4>
+				<p>Choose from a large, ever expanding, community driven
+					collection of sources. Get exactly the news that you want, nothing
+					more, nothing less.</p>
+
+				<h4>Daily Updates</h4>
+				<p>Get your favorite news sources sent directly to your Kindle
+					using Amazon Whispernet</p>
+			</div>
+		</div>
+
+		<footer class="footer">
+			<p>by David Motsonashvili</p>
+		</footer>
+
+	</div>
+
+</body>
+<script>
+	var login = function() {
+		var username = $("#username-box").val();
+		var password = $("#password-box").val();
+		$("#submit-button").prop("disabled", true);
+		$.ajax({
+			type : "POST",
+			url : "users/login",
+			data : {
+				username : username,
+				password : password
+			},
+			success : function(body) {
+				var object = JSON.parse(body);
+				if (object.status === "success") {
+					window.location.href = "/account";
+				} else {
+					$().toastmessage('showToast', {
+						text : object.error,
+						sticky : false,
+						type : 'error',
+						close : function() {
+							$("#submit-button").prop("disabled", false)
+						}
+					});
+				}
+			}
+		});
+
+	}
+
+	$("#submit-button").click(login)
+	$('#password-box').keypress(function(e) {
+		if (e.which == '13') {
+			login();
+		}
+	});
+</script>
+</html>
